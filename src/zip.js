@@ -31,12 +31,12 @@ module.exports = function(gj, options, generateOptions) {
     if (generateOptions){
         generateOptions.compression = 'STORE';
     }else{
-        generateOptions = { compression:'STORE' };
+        generateOptions = { compression:'STORE', type:'base64' };
 
         if (!process.browser) {
             generateOptions.type = 'nodebuffer';
           }
     }
 
-    return zip.generate(generateOptions);
+    return zip.generateAsync(generateOptions);
 };
