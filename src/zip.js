@@ -3,12 +3,12 @@ var write = require('./write'),
     prj = require('./prj'),
     JSZip = require('jszip');
 
-module.exports = function(gj, options) {
+module.exports = function(gj, options, stream = false) {
 
     var zip = new JSZip(),
         layers = zip.folder(options && options.folder ? options.folder : 'layers');
 
-    [geojson.point(gj), geojson.line(gj), geojson.polygon(gj)]
+    [geojson.point(gj), geojson.line(gj), geojson.polygon(gj), geojson.multipolygon(gj), geojson.multiline(gj)]
         .forEach(function(l) {
         if (l.geometries.length && l.geometries[0].length) {
             write(
@@ -33,6 +33,6 @@ module.exports = function(gj, options) {
     if (!process.browser) {
       generateOptions.type = 'nodebuffer';
     }
-
-    return zip.generate(generateOptions);
+    if (stream) return zip.generateNodeStream({...generateOptions,streamFiles:true});
+    else return zip.generateAsync(generateOptions);
 };
